@@ -6,24 +6,25 @@ on:
       - main
 
 env:
-  VERSION: '3.0.4'
+  VERSION: '3.24.5'
   BASE_DIR: '/dart_ast_viewer/'
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.pub-cache
           key: pubspec-${{ hashFiles('./pubspec.lock') }}
           restore-keys: pubspec-
 
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.VERSION }}
+          cache: true
 
       - name: Setup&Build
         run: |
