@@ -10,6 +10,8 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -19,18 +21,19 @@ jobs:
           key: pubspec-${{ hashFiles('./pubspec.lock') }}
           restore-keys: pubspec-
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.18.0
         with:
           flutter-version: ${{ env.VERSION }}
           cache: true
 
-      - name: Setup&Build
+      - name: Setup & Build
         run: |
           flutter pub get
           flutter build web --base-href="${{ env.BASE_DIR }}" --profile
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
